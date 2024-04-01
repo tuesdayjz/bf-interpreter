@@ -1,8 +1,8 @@
 pub enum Token {
-  IncrementPtr,
-  DecrementPtr,
-  IncrementVal,
-  DecrementVal,
+  IncPtr,
+  DecPtr,
+  IncVal,
+  DecVal,
   Out,
   In,
   LoopStart,
@@ -11,10 +11,10 @@ pub enum Token {
 
 pub fn tokenize(input: &str) -> Vec<Token> {
   input.chars().filter_map(|c| match c {
-    '>' => Some(Token::IncrementPtr),
-    '<' => Some(Token::DecrementPtr),
-    '+' => Some(Token::IncrementVal),
-    '-' => Some(Token::DecrementVal),
+    '>' => Some(Token::IncPtr),
+    '<' => Some(Token::DecPtr),
+    '+' => Some(Token::IncVal),
+    '-' => Some(Token::DecVal),
     '.' => Some(Token::Out),
     ',' => Some(Token::In),
     '[' => Some(Token::LoopStart),

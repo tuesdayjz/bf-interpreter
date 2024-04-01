@@ -5,7 +5,7 @@ pub struct Interpreter {
   code: Vec<Token>,
   pc: usize,
   memory: [u8; u8::MAX as usize + 1],
-  pointer: usize,
+  ptr: usize,
 }
 
 impl Interpreter {
@@ -14,27 +14,27 @@ impl Interpreter {
       code,
       pc: 0,
       memory: [0; u8::MAX as usize + 1],
-      pointer: 0,
+      ptr: 0,
     }
   }
 
   pub fn run(mut self, input: &mut dyn Read, output: &mut dyn Write) {
     while self.pc < self.code.len() {
       match self.code[self.pc] {
-        Token::IncrementPtr => self.pointer += 1,
-        Token::DecrementPtr => self.pointer -= 1,
-        Token::IncrementVal => self.memory[self.pointer] = self.memory[self.pointer].wrapping_add(1),
-        Token::DecrementVal => self.memory[self.pointer] = self.memory[self.pointer].wrapping_sub(1),
+        Token::IncPtr => self.ptr += 1,
+        Token::DecPtr => self.ptr -= 1,
+        Token::IncVal => self.memory[self.ptr] = self.memory[self.ptr].wrapping_add(1),
+        Token::DecVal => self.memory[self.ptr] = self.memory[self.ptr].wrapping_sub(1),
         Token::Out => {
-          output.write(&[self.memory[self.pointer]]).unwrap();
+          output.write(&[self.memory[self.ptr]]).unwrap();
         }
         Token::In => {
           let mut buf = [0; 1];
           input.take(1).read(&mut buf).unwrap();
-          self.memory[self.pointer] = buf[0];
+          self.memory[self.ptr] = buf[0];
         }
         Token::LoopStart => {
-          if self.memory[self.pointer] == 0 {
+          if self.memory[self.ptr] == 0 {
             let mut depth = 1;
             while depth != 0 {
               self.pc += 1;
@@ -47,7 +47,7 @@ impl Interpreter {
           }
         }
         Token::LoopEnd => {
-          if self.memory[self.pointer] != 0 {
+          if self.memory[self.ptr] != 0 {
             let mut depth = 1;
             while depth != 0 {
               self.pc -= 1;
